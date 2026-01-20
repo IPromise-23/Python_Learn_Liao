@@ -6,6 +6,66 @@ print(len(str(' ')))   #1个字符，注意和上一个区分，这个是' ',是
 print(len(str('a ')))  #2个字符，一个'a'和一个' '
 注意不要陷入死循环，缩进一定要看准，比如自增，到底在不在while语句内部实现
 
+> Python 的标准程序入口写法：
+
+```python
+#保存为script.py
+def main():
+    pass
+
+if  __name__ == "__main__":
+    main()
+```
+
+- 脚本直接运行时,比如直接在终端执行`python3 script.py`,`__name__`会被直接**赋值**为`"__main__"`,此时执行`main()`函数
+- 脚本被其他脚本导入时,比如`import script`,`__name__`是脚本名,不会执行`main()`,保证代码复用性
+
+举一个具体的例子:
+
+```python
+# my_module.py
+
+# 定义一个辅助函数，供其他脚本调用
+def calculate_sum(a, b):
+    return a + b
+
+# 定义主函数，只有直接运行这个脚本时才会执行
+def main():
+    print("我是 my_module.py 的 main 函数，只有直接运行我时才会执行！")
+    result = calculate_sum(2, 3)
+    print(f"2 + 3 = {result}")
+
+# Python 标准入口判断
+if __name__ == "__main__":
+    print(f"直接运行 my_module.py 时，__name__ = {__name__}")
+    main()
+
+#终端直接运行my_module.py,此时__name__被赋值为“__main__”,所以if__name__=="__main__"条件成立,执行了main()函数
+#输出为:
+#直接运行 my_module.py 时，__name__ = __main__
+#我是 my_module.py 的 main 函数，只有直接运行我时才会执行！
+#2 + 3 = 5
+```
+
+```python
+# main.py脚本,导入my_module.py文件
+
+# 导入 my_module 模块（就是刚才写的 my_module.py 文件）
+import my_module
+
+# 打印导入后 my_module 的 __name__ 值
+print(f"在 main.py 中，my_module 的 __name__ = {my_module.__name__}")
+
+# 调用 my_module 里的辅助函数
+sum_result = my_module.calculate_sum(5, 7)
+print(f"调用 my_module.calculate_sum(5,7) 结果：{sum_result}")
+
+#在终端执行python3 main.py,此时my_module被导入,它的__name__是模块名“my_module”,if语句的条件不成立,不会执行my_module.py里的main()函数,但是可以调用它的calculate_sum函数来复用代码
+#输出为:
+#在 main.py 中，my_module 的 __name__ = my_module
+#调用 my_module.calculate_sum(5,7) 结果：12
+```
+
 ---
 
 # 第四章
